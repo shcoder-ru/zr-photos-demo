@@ -1,0 +1,30 @@
+{namespace zr.gallery}
+
+/**
+ * Show gallery
+ * @param items
+ */
+{template .galleryList}
+  <div class="slider">
+    <div class="slider-list">
+      {foreach $item in $items}
+        {call zr.gallery.galleryItem}
+          {param imageLink: $item /}
+        {/call}
+      {/foreach}
+    </div>
+    <div class="slider-prev">Prev</div>
+    <div class="slider-next">Next</div>
+  </div>
+{/template}
+
+/**
+ * Show gallery item
+ * @param imageLink
+ */
+{template .galleryItem}
+  <div class="slider-list-item">
+    <img src="{$imageLink}">
+  </div>
+</ul>
+{/template}
