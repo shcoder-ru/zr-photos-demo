@@ -8,8 +8,8 @@
   PhotoGallery.prototype = {
 
     render: function(parentSelector){
-      var parentEl = goog.dom.query(parentSelector);
-      goog.soy.renderElement(parentEl[0], gallery.galleryList, {
+      this.parentEl = goog.dom.query(parentSelector);
+      goog.soy.renderElement(this.parentEl[0], gallery.galleryList, {
         items: this.items
       });
       this.listEl = goog.dom.query('.slider-list');
@@ -24,10 +24,39 @@
     },
 
     handleEvents: function(){
+      var self = this;
+
       goog.events.listen(this.prevEl[0], goog.events.EventType.CLICK,
         this.prev, false, this);
       goog.events.listen(this.nextEl[0], goog.events.EventType.CLICK,
         this.next, false, this);
+
+      var countChanges = 0;
+      var positionX = false;
+      this.listEl[0]['on'+goog.events.EventType.TOUCHMOVE] = function(e){
+        if (positionX === false){
+          positionX = e.touches[0].pageX;
+        }
+        countChanges++;
+        if (countChanges === 5){
+          if (positionX > e.touches[0].pageX){
+            self.prev();
+          } else {
+            self.next();
+          }
+        }
+      };
+
+      this.listEl[0]['on'+goog.events.EventType.TOUCHCANCEL] = function(){
+        countChanges = 0;
+        positionX = false;
+      };
+
+      this.listEl[0]['on'+goog.events.EventType.TOUCHEND] = function(){
+        countChanges = 0;
+        positionX = false;
+      };
+
     },
 
     prev: function(){
